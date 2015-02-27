@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv='X-UA-Compatible' content='IE=edge' />
+<title>SAPUI5 Contacts Demo</title>
+ <script id="sap-ui-bootstrap"
+		type="text/javascript"
+		src="http://localhost/sapui5/resources/sap-ui-core.js"
+		data-sap-ui-theme="sap_goldreflection"
+		data-sap-ui-libs="sap.ui.commons,sap.ui.commons,sap.ui.table,sap.ui.ux3"
+		data-sap-ui-modules="sap.ui.commons.MessageBox">
+</script>
+<script type="text/javascript">
+	jQuery.sap.require("sap.ui.model.odata.datajs");
+	jQuery.sap.require("sap.ui.commons.MessageBox");
+	var c = sap.ui.commons, ui = sap.ui; //shorthand
+
+    // Gateway service parameters
+	var sContactsUrl = "http://nplhost.mysap.com:8042/sap/opu/odata/sap/ZTEST3_SRV/",
+		sServiceUrl = sContactsUrl + "Contacts",
+		sUser = "developer",
+		sPassword = "ch4ngeme";
+	
+	// Contact Model
+	var oContactsModel = new sap.ui.model.odata.ODataModel(sContactsUrl, true, sUser, sPassword);
+
+	var actionPost = "1",
+		actionPut = "2",
+		actionSave = "";
+	var firstName = "",
+	    lastname = "";
+
+	sap.ui.getCore().setModel(oContactsModel);
+
+	// Customers table
+	var oTable = new sap.ui.table.DataTable({
+		id : "contactsTable",
+		width : "50%",
+		visibleRowCount : 8,
+		selectionMode : sap.ui.table.SelectionMode.Single,
+		selectedIndex : 0,
+		editable : false
+	});
+	
+	// Dialog Titles
+	var titleModify = "Modify Contact: ",
+		titleCreate = "New Contact: ";
+
+	function setDialogTitle(init){
+		if(init){
+			firstName = sap.ui.getCore().byId("firstNameTextField").getValue();
+			lastName = sap.ui.getCore().byId("lastNameTextField").getValue();
+		}
+
+		if (actionSave === actionPut){ title = titleModify;}
+		else { title = titleCreate;}
+		title += " " + firstName + " " + lastName;
+		oContactDialog.setTitle(title);
+	}
+
+	oTable.setRowHeight('36px');
+	oTable.setTitle("Contacts");
+    //Set table toolbar buttons
+	oTable.setToolbar(new sap.ui.commons.Toolbar({
+		items : [ new sap.ui.commons.Button({
+			text : "Modify Entry",
+			press : function(oEvent) {
+				actionSave = actionPut;
+				oContactDetails.bindContext(selectedRowContext);
+				oContactDialog.open();
+				setDialogTitle(true);
+				oButton3.setVisible(true);
+			}
+		}), new sap.ui.commons.Button({
+			text : "New Entry",
+			press : function(oEvent) {
+				actionSave = actionPost;
+				oContactDetails.unbindContext();
+				oContactDialog.open();
+				setDialogTitle(true);
+				oButton3.setVisible(false);
+			}
+		})
+		]
+	}));
+
+	var selectedRowContext = "";
+	var selectedContact = "";
+
+	oImage = new sap.ui.commons.Image().bindProperty("src", "Avatar");
+	oImage.setHeight("36px");
+	oImage.setWidth("36px");
+
+	oTable.addColumn(new sap.ui.table.Column({
+		label : new sap.ui.commons.Label({
+			text : "Avatar"
+		}),
+		template : oImage,
+		width : "55px",
+		hAlign : "Center"
+	}));
+
+	oTable.addColumn(new sap.ui.table.Column({
+		label : new sap.ui.commons.Label({ text : "First Name" }),
+		template : new sap.ui.commons.TextField({ value : "{FirstName}"	})
+	}));
+	oTable.addColumn(new sap.ui.table.Column({
+		label : new sap.ui.commons.Label({ text : "Last Name" }),
+		template : new sap.ui.commons.TextField({ value : "{LastName}" })
+	}));
+	oTable.addColumn(new sap.ui.table.Column({
+		label : new sap.ui.commons.Label({ text : "Status" }),
+		template : new sap.ui.commons.TextField({ value : "{Status}" })
+	}));
+	oTable.bindRows("Contacts");
+	oTable.placeAt("table");
+
+	// Contact Details Dialog
+	var oContactDialog = new sap.ui.commons.Dialog({
+		id : "contactDialog",
+		height : "300px",
+		width : "400px",
+		modal : true,
+		showCloseButton : true
+	});
+
+	// Contact details dialog
+	var oContactDetails = new sap.ui.commons.layout.MatrixLayout();
+	oContactDetails.setLayoutFixed(false);
+
+	oContactDetails.createRow(new sap.ui.commons.Label({ 
+		text : "First Name",
+		width : "100px"
+	}), new sap.ui.commons.TextField("firstNameTextField", {
+		editable : true,
+		width : "200px",
+		value : "{FirstName}",
+		liveChange : function(oEvent){
+			var oTab = sap.ui.getCore().getControl("contactsTable");
+			firstName = oEvent.getParameter("liveValue");
+		 	setDialogTitle(false);
+		 	oContactsModel.setProperty("FirstName", firstName, selectedRowContext);
+		 	oTab.updateRows();
+		}
+	}));
+
+	oContactDetails.createRow(new sap.ui.commons.Label({
+		text : "Last Name",
+		width : "100px"
+	}), new sap.ui.commons.TextField("lastNameTextField", {
+		editable : true,
+		width : "200px",
+		value : "{LastName}",
+		liveChange :  function(oEvent){
+			lastName = oEvent.getParameter("liveValue");
+		 	setDialogTitle(false);
+		}
+	}));
+
+	oContactDetails.createRow(new sap.ui.commons.Label({
+		text : "Email",
+		width : "100px"
+	}), new sap.ui.commons.TextField("emailTextField", {
+		editable : true,
+		width : "200px",
+		value : "{Email}"
+	}));
+
+	oContactDetails.createRow(new sap.ui.commons.Label({
+		text : "Status",
+		width : "100px"
+	}), new sap.ui.commons.TextField("statusTextField", {
+		editable : true,
+		width : "200px",
+		value : "{Status}"
+	}));
+
+	oContactDetails.createRow(new sap.ui.commons.Label({
+		text : "Home Phone",
+		width : "100px"
+	}), new sap.ui.commons.TextField("homePhoneTextField", {
+		editable : true,
+		width : "200px",
+		value : "{PhoneHome}"
+	}));
+
+	oContactDetails.createRow(new sap.ui.commons.Label({
+		text : "Office Phone",
+		width : "100px"
+	}), new sap.ui.commons.TextField("officePhoneTextField", {
+		editable : true,
+		width : "200px",
+		value : "{PhoneOffice}"
+	}));
+
+	oContactDetails.createRow(new sap.ui.commons.Label({
+		text : "Mobile Phone",
+		width : "100px"
+	}), new sap.ui.commons.TextField("mobilePhoneTextField", {
+		editable : true,
+		width : "200px",
+		value : "{PhoneMobile}"
+	}));
+
+	var oML = new sap.ui.commons.layout.MatrixLayout();
+	oML.setLayoutFixed(false);
+
+	var oRow1 = new sap.ui.commons.layout.MatrixLayoutRow();
+	var oRow2 = new sap.ui.commons.layout.MatrixLayoutRow();
+	var oCell1 = new sap.ui.commons.layout.MatrixLayoutCell();
+	var oCell2 = new sap.ui.commons.layout.MatrixLayoutCell();
+
+	oCell1.addContent(oContactDetails);
+	oRow1.addCell(oCell1);
+	// create a standalone toolbar
+	var oToolbar1 = new sap.ui.commons.Toolbar("tb1");
+	oToolbar1.setDesign(sap.ui.commons.ToolbarDesign.Flat);
+
+	var oButton1 = new sap.ui.commons.Button({
+		text : "Save",
+		style: sap.ui.commons.ButtonStyle.Accept,
+		press : actionSaveEvent
+	});
+	
+	//create an accept button
+	var oButton2 = new sap.ui.commons.Button({
+		text : "Cancel",
+		//style: sap.ui.commons.ButtonStyle.Accept,
+		press: function() { oContactDialog.close(); }
+	});
+	
+	//create a reject button
+	var oButton3 = new sap.ui.commons.Button({ 
+		id: "deleteBTN",
+		text : "Delete",
+		// style: sap.ui.commons.ButtonStyle.Reject,
+		press : actionDeleteEvent,
+		visible : false
+	});
+
+	oToolbar1.addItem(oButton1);
+	oToolbar1.addItem(oButton2);
+	oToolbar1.addItem(oButton3);
+
+	oRow2.addCell(oCell2);
+	oML.addRow(oRow1);
+	oML.createRow(oToolbar1);
+
+	oContactDialog.addContent(oML);
+
+	oTable.attachRowSelect(function(oEvent) {
+		// get the binding context of the first selected row
+		selectedRowContext = oEvent.getParameter("rowContext");
+		selectedContact = oContactsModel.getProperty("Handle", selectedRowContext);
+
+	});
+
+	function actionDeleteEvent(){ deleteEntry()}
+
+	function actionSaveEvent() {
+		switch (actionSave) {
+		case actionPost:
+			addEntry();
+			break;
+		case actionPut:
+			updateEntry();
+			break;
+		}
+	};
+	// Update contact with form fields and do a PUT
+	function updateEntry() {
+		var oContact = oContactsModel.getData(this.selectedRowContext);
+		oContact.FirstName = sap.ui.getCore().byId("firstNameTextField").getValue(), 
+		oContact.LastName = sap.ui.getCore().byId("lastNameTextField").getValue(),
+		oContact.Email = sap.ui.getCore().byId("emailTextField").getValue(),
+		oContact.Status = sap.ui.getCore().byId("statusTextField").getValue();
+		oContact.PhoneMobile = sap.ui.getCore().byId("mobilePhoneTextField").getValue();
+		oContact.PhoneOffice = sap.ui.getCore().byId("officePhoneTextField").getValue();
+		oContact.PhoneHome = sap.ui.getCore().byId("homePhoneTextField").getValue();
+
+		oContactsModel.update(this.selectedRowContext, oContact, null, function(data) {	
+			oContactDialog.close(); 
+			sap.ui.commons.MessageBox.show("Contact " + oContact.Handle + " updated",
+					sap.ui.commons.MessageBox.Icon.SUCCESS, "Contact Saved",
+					sap.ui.commons.MessageBox.Action.OK);
+		}, function(err) {
+			//Error Callback:
+			alert("Error occurred " + err.message);
+		})
+
+	};
+
+	// POST form fields and create new entry
+	function addEntry() {
+		var contactEntry = {
+			FirstName : sap.ui.getCore().byId("firstNameTextField").getValue(),
+			LastName : sap.ui.getCore().byId("lastNameTextField").getValue(),
+			Email : sap.ui.getCore().byId("emailTextField").getValue(),
+			Status : sap.ui.getCore().byId("statusTextField").getValue(),
+			PhoneMobile : sap.ui.getCore().byId("mobilePhoneTextField").getValue(),
+			PhoneOffice : sap.ui.getCore().byId("officePhoneTextField").getValue(),
+			PhoneHome : sap.ui.getCore().byId("homePhoneTextField").getValue()
+		};
+
+		oContactsModel.create("Contacts", contactEntry, null, function(data) {
+			oContactDialog.close(); 
+			sap.ui.commons.MessageBox.show("Contact " + data.Handle
+				+ " created", sap.ui.commons.MessageBox.Icon.SUCCESS,
+				"Contact Saved", sap.ui.commons.MessageBox.Action.OK);
+		}, function(err) {
+			//Error Callback:
+			alert("Error occurred " + err.message);
+		})
+	};
+
+	// delete selected entry
+	function deleteEntry(){
+		var oContact = oContactsModel.getData(this.selectedRowContext),
+			name = oContact.FirstName + " " + oContact.LastName;
+		oContactsModel.remove(this.selectedRowContext, null, function(data) {	
+			oContactDialog.close();
+			sap.ui.commons.MessageBox.show("Contact " + name + " deleted",
+					sap.ui.commons.MessageBox.Icon.SUCCESS, "Contact deleted",
+					sap.ui.commons.MessageBox.Action.OK);
+		}, function(err) {
+			//Error Callback:
+			alert("Error occurred " + err.message);
+		})
+	};
+</script>
+</head>
+<body class="sapUiBody">
+	<div id="table"></div>
+</body>
+</html>
+</html>
