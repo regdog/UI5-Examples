@@ -1,0 +1,66 @@
+<!DOCTYPE html>  
+<html><head>  
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' />  
+    <title>Hello World</title>  
+  
+    <script id='sap-ui-bootstrap' 
+        src='https://openui5.hana.ondemand.com/resources/sap-ui-core.js'  
+        data-sap-ui-theme='sap_bluecrystal'  
+        data-sap-ui-libs='sap.m'></script>   
+  
+    <script>
+		
+		jQuery(function() { 		
+			var oModel = new sap.ui.model.json.JSONModel();
+			var data = {
+				name: "Members",
+				members: [
+					{first:"Phil", last:"Lynt"},
+					{first:"Scot", last:"Gorm"},
+					{first:"Brian", last:"Robert"},
+					{first:"Brian", last:"Down"}
+				]
+			} 		
+			oModel.setData(data);
+			sap.ui.getCore().setModel(oModel);
+
+			//scan for templates and carry them out
+			sap.ui.template();
+		})
+
+    </script>
+    
+    </head>
+    <body class='sapUiBody'>
+
+		<h2>This is a simple template which uses Handlebars and UI5's model</h2>
+		
+		<div id="simpleTemplate" data-type="text/x-handlebars-template">
+			<div>{{text path="/name"}}:</div>
+			<ul>
+				{{#each path="/members"}}
+					<li>
+					{{text path="first"}}
+					{{text path="last"}}
+					</li>
+				{{/each}}
+			</ul>
+		</div>
+		
+		<h2>This is a template using UI5 controls on top</h2>
+		
+		<div id="controlsTemplate" data-type="text/x-handlebars-template">
+			<div>{{text path="/name"}}</div>
+			<ul>
+				{{#each path="/members"}}
+					<li>
+						{{control sap-ui-type="sap.m.Text" text="{first}"}}
+						{{control sap-ui-type="sap.m.Text" text="{last}"}}
+					</li>
+				{{/each}}
+			</ul>
+			Change an entry in the fields to see the live binding!
+		</div>	
+		
+    </body>
+</html>

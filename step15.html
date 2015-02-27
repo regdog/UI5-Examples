@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html><head>
+	<meta http-equiv='X-UA-Compatible' content='IE=edge' />
+	<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/>
+	
+	<title>OData Date Formats</title>
+	
+    <script id='sap-ui-bootstrap' type='text/javascript' 
+        src='https://sapui5.netweaver.ondemand.com/resources/sap-ui-core.js'
+          data-sap-ui-theme='sap_bluecrystal'
+       data-sap-ui-xx-fakeOS="ipad"
+        data-sap-ui-libs="sap.ui.commons,sap.ui.ux3,sap.viz,sap.ui.table">
+  
+    </script> 
+	
+	
+	<script>
+		sap.ui.controller("my.own.controller", {
+		});
+		sap.ui.jsview("my.own.view", {
+			getControllerName: function() {
+				return "my.own.controller";
+			},
+			createContent: function(oController) {
+				var url = "https://cors-anywhere.herokuapp.com/services.odata.org/Northwind/Northwind.svc/";
+				var oModel = new sap.ui.model.odata.ODataModel(url, true);
+				var oTable = new sap.ui.table.DataTable({ // create Table UI
+					columns : [
+						{label: "Product Name", template: "ProductName", sortProperty: "ProductName" },
+						{label: "Product Sales", template: "ProductSales", sortProperty: "ProductSales" }
+					]
+				});
+				oTable.setModel(oModel);				
+				oTable.bindRows("/Product_Sales_for_1997");
+				return oTable;
+			}
+		});
+		var myView1 = sap.ui.view({type:sap.ui.core.mvc.ViewType.JS, viewName:"my.own.view"});
+			
+					sap.ui.controller("my.own.controller2", {
+		});
+		sap.ui.jsview("my.own.view2", {
+			getControllerName: function() {
+				return "my.own.controller2";
+			},
+			createContent: function(oController) {
+				var url = "https://cors-anywhere.herokuapp.com/services.odata.org/Northwind/Northwind.svc/";
+				var oModel = new sap.ui.model.odata.ODataModel(url, true);
+				var oTable = new sap.ui.table.DataTable({
+					columns : [
+						{label: "Last Name", template: "LastName", sortProperty: "LastName" },
+						{label: "First Name", template: "FirstName", sortProperty: "FirstName" }
+					]
+				});
+				oTable.setModel(oModel);				
+				oTable.bindRows("/Employees");
+				return oTable;
+			}
+		});
+		var myView2 = sap.ui.view({type:sap.ui.core.mvc.ViewType.JS, viewName:"my.own.view2"});
+			
+
+			var oShell = new sap.ui.ux3.Shell("myShell", {
+				appTitle:"Two View Tables",                 // give a title
+				worksetItems:[                                          // add some items to the top navigation
+					new sap.ui.ux3.NavigationItem("wi_so", {key:"wi_so",text:"View - 1"}),
+					new sap.ui.ux3.NavigationItem({key:"wi_analyze",text:"View - 2"}),
+				]
+			});
+			var mContent = {}; // a map to remember page content once it is created
+			function getContent(key) {
+				if (mContent[key]) return mContent[key];
+				if (key == "wi_so") {
+					mContent[key] = myView1;
+				} else if (key == "wi_analyze") {
+					mContent[key] = myView2;
+				}
+				return mContent[key];       
+			}
+			oShell.attachWorksetItemSelected(function(oEvent) {
+				var key = oEvent.getParameter("key");    
+				oShell.setContent(getContent(key));
+			});			
+			oShell.setContent(getContent("wi_so"));
+			oShell.placeAt("content");
+      
+      
+ 	</script>
+	</head>
+	<body class='sapUiBody'>
+		<div id='content'></div>
+	</body>
+</html>

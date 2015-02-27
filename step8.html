@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html><head>
+    <meta name="description" content="UI5 XML view example" />
+	<meta http-equiv='X-UA-Compatible' content='IE=edge' />
+	<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/>
+	
+	<title>UI5 MVC with XmlView</title>
+	
+	<!-- Load UI5, select blue crystal theme and the "sap.m" control library -->
+	<script id='sap-ui-bootstrap' type='text/javascript'
+		src='https://openui5.hana.ondemand.com/resources/sap-ui-core.js'
+		data-sap-ui-theme='sap_bluecrystal'
+		data-sap-ui-libs='sap.m'></script>
+	
+	<script>
+		
+		/*** DEFINE RE-USE COMPONENTS - NORMALLY DONE IN SEPARATE FILES ***/
+		
+		// define a new (simple) Controller type
+		sap.ui.controller("my.own.controller", {
+			
+			// implement an event handler in the Controller
+			doSomething: function() {
+				alert("Hello World!");
+			}
+		});
+		
+		
+		// define a new (simple) View type as an XmlView
+		// - using data binding for the Button text
+		// - binding a controller method to the Button's "press" event
+		// - also mixing in some plain HTML
+		// note: typically this would be a standalone file
+		var xml = '<core:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"    '
+			+ '              controllerName="my.own.controller" xmlns:html="http://www.w3.org/1999/xhtml">   '
+			+ '       XML view instantiated with XML string:<html:br/>                                       '
+			+ '       <Panel text="Hello World">                                                             '
+			+ '          <Button text="{/actionName}" press="doSomething"></Button>                          '
+			+ '          <html:table border="5"><html:tr><html:td>An</html:td><html:td>HTML Table</html:td></html:tr></html:table>'
+			+ '       </Panel>                                                                               '
+			+ '    </core:View>                                                                              ';
+		
+		
+		
+		/*** THIS IS THE "APPLICATION" CODE ***/
+		
+		// create some dummy JSON data
+		var data = {
+			actionName: "Say Hello"
+		};
+		
+		// instantiate the View
+		var myView = sap.ui.xmlview({viewContent:xml});
+		
+		// create a Model and assign it to the View
+		var oModel = new sap.ui.model.json.JSONModel();
+		oModel.setData(data);
+		myView.setModel(oModel);
+		
+		// put the View onto the screen
+		myView.placeAt('content');
+		
+		
+	</script>
+	
+	</head>
+	<body class='sapUiBody'>
+		<div id='content'></div>
+	</body>
+</html>

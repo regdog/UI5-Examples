@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="description" content="Basic Fiori App with Navigation and IconTabs" />
+	<meta http-equiv='X-UA-Compatible' content='IE=edge' />
+	<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/>
+	<title>SAPUI5 Mobile App - Tiles, Pages, IconTabs</title>
+  
+	<script id='sap-ui-bootstrap' type='text/javascript'
+		src='https://sapui5.netweaver.ondemand.com/resources/sap-ui-core.js'
+		data-sap-ui-theme='sap_bluecrystal'
+		data-sap-ui-libs='sap.m'></script>
+		<!-- add 'sap.ui.table' and/or other libraries if required -->
+ 
+	<script>
+		var app = sap.m.App("myApp",{});
+	
+		var tilecont = new sap.m.TileContainer({
+			tiles: [
+				new sap.m.StandardTile({
+					  icon : "sap-icon://inbox",
+					  number : "42",
+					  title : "Add New Employee",
+					  info : "Overdue",
+					  infoState : "Error",
+					press:function(){
+						app.to("page1");
+					}
+					
+				})
+			],
+			
+		});
+
+
+		app.addPage(tilecont);
+					 
+		
+		
+		
+		var l1 = new sap.m.Label("l1",{text:"First Name"});
+		var l2 = new sap.m.Label("l2",{text:"Last Name"});
+		var l3 = new sap.m.Label("l3",{text:"Phone Number"});
+
+		var tv1 = new sap.m.Input("tv1",{placeholder:"Kannan"});
+		var tv2 = new sap.m.Input("tv2",{placeholder:"Kumar"});
+		var tv3 = new sap.m.Input("tv3",{placeholder:"989279729"});
+		var page1 = new sap.m.Page("page1",{
+			title: "User Details",
+			showNavButton:true,
+			navButtonTap:function(){
+				app.back();
+			},
+			content: [l1,tv1,l2,tv2,l3,tv3,
+					  new sap.m.Button({
+						  text:"submit",
+						  press:function(){
+							  app.to("page2");
+					  }
+				})						  
+			]
+		});
+		app.addPage(page1);
+		
+		var l4 = new sap.m.Label("l4",{text:"Street No"});
+		var l5 = new sap.m.Label("l5",{text:"City"});
+		var l6 = new sap.m.Label("l6",{text:"State"});
+		
+		var tv4 = new sap.m.Input("tv4",{placeholder:"127 Whitley Road"});
+		var tv5 = new sap.m.Input("tv5",{placeholder:"Mumbai"});
+		var tv6 = new sap.m.Input("tv6",{placeholder:"Maharashtra"});
+		
+		var page2 = new sap.m.Page("page2",{
+			title:"Address Details",
+			showNavButton:true,
+			navButtonTap: function(){
+				app.back();
+			},
+			content: [l4,tv4,l5,tv5,l6,tv6, new sap.m.Button({
+						  text:"submit",
+						  tap:function(){
+							  app.to("page3");
+						  }})
+					 ]
+		});
+		
+		app.addPage(page2);
+		var tabBar = new sap.m.IconTabBar({
+      expanded: !jQuery.device.is.phone,
+      items: [
+        new sap.m.IconTabFilter({
+          icon: "sap-icon://hint",
+          text: "Basic Pay",
+          content: new sap.m.Text({
+            text: "Basic Content content goes here ..."
+          })
+        }),
+        new sap.m.IconTabFilter({
+          icon: "sap-icon://attachment",
+          text: "Leave Quotas",
+          count: "3",
+          content: new sap.m.Text({
+            text: "Leave Quotas go here ..."
+          })
+        }),
+        new sap.m.IconTabFilter({
+          icon: "sap-icon://notes",
+          text: "Work Schedules",
+          count: "12",
+          content: new sap.m.Text({
+            text: "Work Schedules go here ..."
+          })
+        }),
+        new sap.m.IconTabFilter({
+          icon: "sap-icon://group",
+          text: "Manager",
+          content: new sap.m.Text({
+            text: "Manager content goes here ..."
+          })
+        })
+      ]
+    });
+		
+		var page3 = new sap.m.Page("page3",{
+			title:"Infotypes",
+			showNavButton:true,
+			navButtonTap: function(){
+		app.back();
+		},
+			content: [tabBar]
+		});
+								   
+		app.addPage(page3);
+		app.placeAt('content');
+	</script>
+ 
+</head>
+<body class='sapUiBody'>
+	<div id='content'></div>
+</body>
+</html>

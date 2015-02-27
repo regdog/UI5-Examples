@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta http-equiv='X-UA-Compatible' content='IE=edge' />
+	<meta charset="UTF-8">
+ 
+	<title>Mobile OData Demo</title>
+ 
+	<script id='sap-ui-bootstrap'
+		src='https://openui5.hana.ondemand.com/resources/sap-ui-core.js'
+		data-sap-ui-theme='sap_mvi'
+		data-sap-ui-libs='sap.m'
+		data-sap-ui-xx-test-mobile = "true"
+	 	data-sap-ui-xx-fakeOS = "android">
+	</script>
+ 
+	<script>
+		(function() {
+			var app = new sap.m.App("ODataDemo");
+
+			// main page
+			var appStartPage = new sap.m.Page("startPage", {
+				title : "List Overview",
+				footer : new sap.m.Bar({
+					contentMiddle : [ new sap.m.Label({
+						text : "Mobile OData Demo"
+					}) ]
+				})
+			});
+
+			var Bar = new sap.m.Bar({ 
+				contentLeft: [],	
+				contentMiddle: [new sap.m.Label('BarTitle', {text: "Products"})],
+				contentRight: []
+			});
+			appStartPage.setCustomHeader(Bar);
+		
+			var oListStandardNoImageNoHeader = new sap.m.List({
+				inset : false
+			});
+			itemTemplate = new sap.m.StandardListItem({
+				title : '{ProductName}',
+				tap: function(oEvent) {
+					detailPage.setBindingContext(oEvent.getSource().getBindingContext());
+					app.to("detailPage");
+				},
+				type: "Navigation",
+				description: "{ProductID}",
+				customData: [
+								new sap.ui.core.CustomData({
+									key: "id",
+									value: "{ProductID}"
+								}),
+							]
+			});
+			oListStandardNoImageNoHeader.bindAggregation("items", {
+				path: "/Products",
+				template: itemTemplate
+			});
+
+			appStartPage.addContent(oListStandardNoImageNoHeader);
+
+			// detail page
+			var listDetail1 = new sap.m.List({
+				headerText: "Product Information",
+				inset: false
+			});
+			var listDetail2 = new sap.m.List({
+				headerText: "Supplier Details",
+				inset: false
+			});
+			listDetail1.addItem(new sap.m.DisplayListItem(	{ value: "{ProductID}"     , label: "ID"     }));
+			listDetail1.addItem(new sap.m.DisplayListItem(	{ value: "{ProductName}" , label: "Name" }));
+			listDetail1.addItem(new sap.m.DisplayListItem(	{ value: "{UnitPrice}" , label: "Price" }));
+
+			listDetail2.bindContext("Supplier");
+			listDetail2.addItem(new sap.m.DisplayListItem(	{ value: "{SupplierName}"   , label: "Company"   }));
+			listDetail2.addItem(new sap.m.DisplayListItem(	{ value: "{Address}"   , label: "Street"   }));
+			listDetail2.addItem(new sap.m.DisplayListItem(	{ value: "{City}"      , label: "City"      }));
+			listDetail2.addItem(new sap.m.DisplayListItem(	{ value: "{Country}"   , label: "Country"   }));
+			listDetail2.addItem(new sap.m.DisplayListItem(	{ value: "{PostalCode}", label: "Postal Code"}));
+
+			var detailPage = new sap.m.Page("detailPage", {
+				title : "Product Details",
+				showNavButton : true,
+				navButtonText : "Products",
+				navButtonTap : function() {
+					app.back();
+				},
+				content: [
+						listDetail1,
+						listDetail2
+					]
+			});
+
+			// data access
+			function getServiceUrl(sServiceUrl) {
+				var sOrigin = window.location.protocol + "//" + window.location.hostname
+						+ (window.location.port ? ":" + window.location.port : "");
+				if (!jQuery.sap.startsWith(sServiceUrl, sOrigin)) {
+					return "proxy/" + sServiceUrl.replace("://", "/");
+				} else {
+					return sServiceUrl.substring(sOrigin.length);
+				}
+			};
+			var sServiceUrl = "https://cors-anywhere.herokuapp.com/services.odata.org/Northwind/Northwind.svc/";
+			// sServiceUrl = getServiceUrl(sServiceUrl);
+			var busyDialog = (busyDialog) ? busyDialog : new sap.m.BusyDialog('busyDialog',{text:'Loading Northwind Data', title: 'Loading'});
+			$(function(){
+				var oModel = new sap.ui.model.odata.ODataModel(sServiceUrl, true);
+				oModel.setSizeLimit(20);
+				oModel.attachRequestFailed(function(evt) {
+					alert("Server error: " + evt.getParameter("message") + " - " + evt.getParameter("statusText"));
+				});
+
+				jQuery.sap.log.debug(oModel);
+				// BusyDialog
+				oModel.attachRequestSent(function(){busyDialog.open();});
+				oModel.attachRequestCompleted(function(){busyDialog.close();});
+				oCore = sap.ui.getCore().setModel(oModel);
+			});
+
+
+			app.addPage(appStartPage).addPage(detailPage);
+			app.placeAt("content");
+
+
+			// history handling
+			jQuery.sap.require("jquery.sap.history");
+			jQuery.sap.history({
+				routes: [{
+					path: "detailPage",
+					handler: function(params, navType) {
+						if (navType === jQuery.sap.history.NavType.Back) app.back();
+							else {
+								detailPage.setBindingContext(params.ctx);
+								app.to("detailPage");
+							}
+						}
+				}],
+				defaultHandler: function(navType) {
+					(navType === jQuery.sap.history.NavType.Back) ?  app.back() : app.to("startPage");
+				}
+			});
+		})();
+	</script>
+ 
+	</head>
+	<body id="body" class="sapUiBody">
+		<div id="content"></div>
+	</body>
+</html>

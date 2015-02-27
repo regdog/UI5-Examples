@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="description" content="UI5 MVC example with JS view" />
+	<meta http-equiv='X-UA-Compatible' content='IE=edge' />
+	<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/>
+	
+	<title>MVC in 22 Seconds Example</title>
+	
+	<!-- Load UI5, select gold reflection theme and the "commons" control library -->
+	<script id='sap-ui-bootstrap' type='text/javascript'
+		src='https://openui5.hana.ondemand.com/resources/sap-ui-core.js'
+		data-sap-ui-theme='sap_bluecrystal'
+		data-sap-ui-libs='sap.m'></script>
+	
+	<script>
+		
+		/*** DEFINE RE-USE COMPONENTS - NORMALLY DONE IN SEPARATE FILES ***/
+		
+		// define a new (simple) Controller type
+		sap.ui.controller("my.own.controller", {
+			
+			// implement an event handler in the Controller
+			doSomething: function() {
+				alert("Hello World!");
+			}
+		});
+		
+		
+		// define a new (simple) View type
+		// ...alternatively this can be done in an XML file without JavaScript!
+		sap.ui.jsview("my.own.view", {
+			
+			// define the (default) controller type for this View
+			getControllerName: function() {
+				return "my.own.controller";
+			},
+			
+			// defines the UI of this View
+			createContent: function(oController) {
+				// button text is bound to Model, "press" action is bound to Controller's event handler
+				return new sap.m.Button({text:'{/actionName}',press:oController.doSomething});
+			}
+		});
+		
+		
+		
+		/*** THIS IS THE "APPLICATION" CODE ***/
+		
+		// create some dummy JSON data
+		var data = {
+			actionName: "Say Hello"
+		};
+		
+		// instantiate the View
+		var myView = sap.ui.view({type:sap.ui.core.mvc.ViewType.JS, viewName:"my.own.view"});
+		
+		// create a Model and assign it to the View
+		var oModel = new sap.ui.model.json.JSONModel();
+		oModel.setData(data);
+		myView.setModel(oModel);
+		
+		// put the View onto the screen
+		myView.placeAt('content');
+		
+		
+	</script>
+	
+	</head>
+	<body class='sapUiBody'>
+		<div id='content'></div>
+	</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="description" content="retrive other component" />
+	<meta http-equiv='X-UA-Compatible' content='IE=edge' />
+	<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/>
+	
+	<title>Retrive other component(Just for demo, anti-MVC)</title>
+	
+	<!-- Load UI5, select gold reflection theme and the "commons" control library -->
+	<script id='sap-ui-bootstrap' type='text/javascript'
+		src='https://openui5.hana.ondemand.com/resources/sap-ui-core.js'
+		data-sap-ui-theme='sap_bluecrystal'
+		data-sap-ui-libs='sap.ui.commons'></script>
+	
+	<script>
+		/*** DEFINE RE-USE COMPONENTS - NORMALLY DONE IN SEPARATE FILES ***/
+		
+		sap.ui.controller("com.yqu.controller.Left", {
+			handleRightPresense: function() {
+			  var oCB = sap.ui.getCore().byId("check1");
+			  var rightPanel = sap.ui.getCore().byId("panel2");
+			  if(oCB.getChecked() && !rightPanel.getVisible()) {
+			    rightPanel.setVisible(true);
+			  } else if(!oCB.getChecked() && rightPanel.getVisible()){
+			    rightPanel.setVisible(false);
+			  }
+			}
+		});
+
+	
+		sap.ui.jsview("com.yqu.view.Left", {
+			
+			getControllerName: function() {
+				return "com.yqu.controller.Left";
+			},
+			
+			createContent: function(oController) {
+				var oPanel = new sap.ui.commons.Panel("panel1");
+								
+				var oCB = new sap.ui.commons.CheckBox("check1", {
+					text : 'Right view presense control',
+					checked : true,
+					change : [oController.handleRightPresense, oController]
+					});
+
+				var oBTN = new sap.ui.commons.Button("button1", {
+					text : "Button",
+					tooltip : "This is a test tooltip",
+					press : function() {sap.ui.getCore().byId('rightView').getController().doSomething();}
+				});
+
+				oPanel.addContent(oCB);
+				oPanel.addContent(oBTN);
+				return oPanel;
+			}
+		});
+		
+		sap.ui.controller("com.yqu.controller.Right", {
+			doSomething: function() {
+			  alert("It is right to do something???!!!");
+			}
+		});
+
+	
+		sap.ui.jsview("com.yqu.view.Right", {
+			
+			getControllerName: function() {
+				return "com.yqu.controller.Right";
+			},
+			
+			createContent: function(oController) {
+				var oPanel = new sap.ui.commons.Panel("panel2");
+								
+				oInput = new sap.ui.commons.TextArea('input1');
+				oInput.setValue("Here is some Text. I hope you like it.");
+				oInput.setTooltip("This is a tooltip");
+				oInput.setRows(3);
+				oInput.attachChange(function(){alert('Text changed to :'+ oInput.getValue());});
+				
+				oPanel.addContent(oInput);
+
+				return oPanel;
+			}
+		});
+				
+		sap.ui.controller("com.yqu.controller.Application", {
+		});	
+		
+		sap.ui.jsview("com.yqu.view.Application", {
+			getControllerName: function() {
+				return "com.yqu.controller.Application";
+			},
+			
+
+			createContent: function(oController) {
+				var oViewLeft = sap.ui.jsview("leftView", "com.yqu.view.Left");
+				var oViewRight = sap.ui.jsview("rightView", "com.yqu.view.Right");
+				
+				var oSplitter = new sap.ui.commons.Splitter("Splitter1");
+        oSplitter.setSplitterOrientation(sap.ui.commons.Orientation.vertical);
+        oSplitter.setSplitterPosition("50%");
+        oSplitter.setMinSizeFirstPane("20%");
+        oSplitter.setMinSizeSecondPane("20%");
+        oSplitter.setWidth("100%");
+        oSplitter.setHeight("100%");
+        
+        oSplitter.addFirstPaneContent(oViewLeft);
+        oSplitter.addSecondPaneContent(oViewRight);
+
+				return oSplitter;
+			}
+		});			
+			
+		// instantiate the View
+		var myAppView = sap.ui.view({type:sap.ui.core.mvc.ViewType.JS, viewName:"com.yqu.view.Application"});
+		
+		
+		// put the View onto the screen
+		myAppView.placeAt('content');		
+	</script>
+	
+	</head>
+	<body class='sapUiBody'>
+		<div id='content'></div>
+	</body>
+</html>
