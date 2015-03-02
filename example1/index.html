@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Global Varialbes</title>
+    <script src="https://openui5.hana.ondemand.com/resources/sap-ui-core.js" 
+      id="sap-ui-bootstrap"
+      data-sap-ui-libs="sap.m" 
+      data-sap-ui-theme="sap_bluecrystal"></script>
+    <script>
+      sap.ui.getCore().AppContext = new Object();
+      sap.ui.getCore().AppContext.Language = "Dutch";
+
+      sap.ui.localResources("view");
+      var view = sap.ui.view({viewName:"view.App", type:sap.ui.core.mvc.ViewType.JS});
+      view.placeAt("content");
+    </script>
+  </head>
+  <body class="sapUiBody">
+  	<div id="content"></div>
+  </body>
+</html>
