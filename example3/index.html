@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/>
+
+
+  <script src="https://openui5.hana.ondemand.com/resources/sap-ui-core.js"
+  id="sap-ui-bootstrap"
+  data-sap-ui-libs="sap.m,sap.ui.commons"
+  data-sap-ui-theme="sap_bluecrystal">
+  </script>
+  <!-- only load the mobile lib "sap.m" and the "sap_bluecrystal" theme -->
+
+  <script>
+  sap.ui.localResources("Views");  //Folder where views JS files are stored
+  jQuery.sap.require("sap.ui.core.routing.Router");  // load Router module
+  jQuery.sap.require("sap.m.routing.RouteMatchedHandler");  // load RouteMatchedHandler module
+  //Initilaize the MainView
+  var app = sap.ui.view({id:"idMainView1", viewName:"Views.MainView", type:sap.ui.core.mvc.ViewType.JS});
+ 
+     //Place the MainView content in "Content" Area
+  app.placeAt("content");
+  // Create an instance of Router class
+  var oRouter = new sap.ui.core.routing.Router(
+  {  
+      rcategories: {   //Route 'rcategories' takes you from the current view to view 'Categories'
+           pattern: "oscars/{year}",  // This pattern is placed after the hash('#') symbol in URL
+                                      // varaible inside {}, 'year' in this case is replaced with value later
+                                      // in method itempressed() inside controller of 'Years' view
+          view: "detail.Categories",  // This is the target view, to where navigation happens      
+   },  
+   rnomwinner: {    //Route 'rnomwinner' takes you from the current view to view 'NomWinner' 
+	   
+   pattern: "nominees/{year}/{cat}",   // This pattern is placed after the hash('#') symbol in URL
+   									   // varaible inside {}, 'year' and 'cat' in this case are replaced with values later
+                                       // in method itempressed() inside controller of 'Categories' view
+   view: "detail.NomWinner"  ,         // This is the target view, to where navigation happens 
+   }  
+   }, 
+   {  
+   targetControl: "splitapp",      // targetControl refers to the id of control where all the target views are to be placed
+                                   // this is defined in 'MainView' createcontent method
+  targetAggregation: "detailPages", // targetAggregation refers to aggregation namw of targetControl. For splitApp
+                                   // control there are two Aggregations, 'detailPages' and 'masterPages'
+   viewType: "JS",   // viewType defines type of the target views
+   viewPath: "Views",  // The view path parameter specifies a prefix that prepends the target views. In our case
+                     // target view detail.Categories will be takes as Views.detail.Categories. Please note that
+                     // view Categories is placed under folder Views/detail/
+   clearTarget: false  //The clear target parameter defines a boolean that is used to specify if the aggregation
+                      //should be cleared before adding the view to it.
+   });  
+   var oRouteHandler = new sap.m.routing.RouteMatchedHandler(oRouter);  
+   oRouter.register("router");  // Assign a name to Router, so that we can access it in all controllers by using this name
+   oRouter.initialize();  // Initialise the Router
+  </script>
+  </head>
+  <body class="sapUiBody" role="application">
+  <div id="content"></div>
+  </body>
+</html>

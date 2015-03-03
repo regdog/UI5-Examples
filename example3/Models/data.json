@@ -1,0 +1,264 @@
+{
+  "oscars": [
+    {
+      "year": "2010",
+      "categories": [
+        {
+          "category": "Movie",
+          "nominees": [
+            {
+              "nominee": "Inglourious Basterds"
+            },
+            {
+              "nominee": "Avatar"
+            },
+            {
+              "nominee": "The Hurt Locker"
+            },
+            {
+              "nominee": "The Blind Side"
+            }
+          ],
+          "winner": "The Hurt Locker"
+        },
+        {
+          "category": "Actor",
+          "nominees": [
+            {
+              "nominee": "Jeff Bridges"
+            },
+            {
+              "nominee": "George Clooney"
+            },
+            {
+              "nominee": "Morgan Freeman"
+            }
+          ],
+          "winner": "Jeff Bridges"
+        },
+        {
+          "category": "Actress",
+          "nominees": [
+            {
+              "nominee": "Sandra Bullock"
+            },
+            {
+              "nominee": "Helen Mirren "
+            },
+            {
+              "nominee": "Carey Mulligan"
+            },
+            {
+              "nominee": "Meryl Streep"
+            }
+          ],
+          "winner": "Sandra Bullock"
+        }
+      ]
+    },
+    {
+      "year": "2011",
+      "categories": [
+        {
+          "category": "movie",
+          "nominees": [
+            {
+              "nominee": "Black Swan"
+            },
+            {
+              "nominee": "The King's Speech"
+            },
+            {
+              "nominee": "The Social Network"
+            }
+          ],
+          "winner": "The King's Speech"
+        },
+        {
+          "category": "Actor",
+          "nominees": [
+            {
+              "nominee": "Javier Bardem"
+            },
+            {
+              "nominee": "Jeff Bridges"
+            },
+            {
+              "nominee": "Colin Firth"
+            }
+          ],
+          "winner": "Colin Firth"
+        },
+        {
+          "category": "Actress",
+          "nominees": [
+            {
+              "nominee": "Annette Bening"
+            },
+            {
+              "nominee": "Nicole Kidman"
+            },
+            {
+              "nominee": "Natalie Portman"
+            }
+            
+          ],
+          "winner":  "Natalie Portman"
+        }
+      ]
+    },
+    {
+      "year": "2012",
+      "categories": [
+        {
+          "category": "Movie",
+          "nominees": [
+            {
+              "nominee": "The Artist"
+            },
+            {
+              "nominee": "Extremely Loud & Incredibly Close"
+            },
+            {
+              "nominee": "Midnight in Paris"
+            }
+          ],
+          "winner": "The Artist"
+        },
+        {
+          "category": "Actor",
+          "nominees": [
+            {
+              "nominee": "Jean Dujardin"
+            },
+            {
+              "nominee": "Brad Pitt"
+            },
+            {
+              "nominee": "Gary Oldman"
+            }
+          ],
+          "winner": "Jean Dujardin"
+        },
+        {
+          "category": "Actress",
+          "nominees": [
+            {
+              "nominee": "Meryl Streep"
+            },
+            {
+              "nominee": "Glenn Close"
+            },
+            {
+              "nominee": "Rooney Mara"
+            }
+            
+          ],
+          "winner": "Meryl Streep"
+        }
+      ]
+    },
+    {
+      "year": "2013",
+      "categories": [
+        {
+          "category": "Movie",
+          "nominees": [
+            {
+              "nominee":  "Argo"
+            },
+            {
+              "nominee": "Beasts of the Southern Wild"
+            },
+            {
+              "nominee": "Django Unchained"
+            }
+          ],
+          "winner": "Argo"
+        },
+        {
+          "category": "Actor",
+          "nominees": [
+            {
+              "nominee":  "Daniel Day-Lewis"
+            },
+            {
+              "nominee": "Bradley Cooper"
+            },
+            {
+              "nominee": "Denzel Washington"
+            }
+          ],
+          "winner": "Daniel Day-Lewis"
+        },
+        {
+          "category": "Actress",
+          "nominees": [
+            {
+              "nominee": "Jennifer Lawrence"
+            },
+            {
+              "nominee": "Jessica Chastain"
+            },
+            {
+              "nominee": "Quvenzhané Wallis"
+            }
+           
+          ],
+          "winner": "Jennifer Lawrence"
+        }
+      ]
+    },
+    {
+      "year": "2014",
+      "categories": [
+        {
+          "category": "Movie",
+          "nominees": [
+            {
+              "nominee": "12 Years a Slave"
+            },
+            {
+              "nominee": "Gravity"
+            },
+            {
+              "nominee": "Nebraska"
+            }
+          ],
+          "winner": "12 Years a Slave"
+        },
+        {
+          "category": "Actor",
+          "nominees": [
+            {
+              "nominee": "Matthew McConaughey"
+            },
+            {
+              "nominee": "Bruce Dern"
+            },
+            {
+              "nominee": "Christian Bale"
+            }
+          ],
+          "winner": "Matthew McConaughey"
+        },
+        {
+          "category": "Actress",
+          "nominees": [
+            {
+              "nominee": "Cate Blanchett"
+            },
+            {
+              "nominee": "Sandra Bullock"
+            },
+            {
+              "nominee": "Meryl Streep"
+            }
+           
+          ],
+          "winner": "Cate Blanchett"
+        }
+      ]
+    }
+  ]
+}
