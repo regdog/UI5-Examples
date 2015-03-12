@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html><head>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+    <title>Notepad control with its own control library, used in XMLView</title>
+    
+    <!-- Load UI5, select blue crystal theme and the "commons" control library -->
+    <script id='sap-ui-bootstrap' type='text/javascript'
+       src='https://openui5.hana.ondemand.com/resources/sap-ui-core.js'
+       data-sap-ui-theme='sap_bluecrystal'
+       data-sap-ui-libs='sap.ui.commons'></script>
+    
+    <script>
+        
+        
+        // PART 1:  Define the new library in which the custom control will be
+        
+        jQuery.sap.declare("my.library");
+        jQuery.sap.require("sap.ui.core.Core");
+        // library dependencies
+        jQuery.sap.require("sap.ui.core.library");
+        
+        // delegate further initialization of this library to the Core
+        sap.ui.getCore().initLibrary({
+            name : "my",
+            dependencies : ["sap.ui.core"],
+            types: [],
+            interfaces: [],
+            controls: ["my.Square"],
+            elements: [],
+            version: "0.0.1-SNAPSHOT"});
+        
+        
+        
+        
+        // PART 2: define the new (simple) Control type
+        jQuery.sap.declare("my.Square");
+        sap.ui.core.Control.extend("my.Square", { // call the new Control type "my.Square" and let it inherit from sap.ui.core.Control
+            
+            // the control API:
+            metadata : {
+                properties : {           // setter and getter are created behind the scenes, incl. data binding and type validation
+                    "text" : "string",   // in simple cases, just define the type
+                    "size" : {type: "sap.ui.core.CSSSize", defaultValue: "200px"} // you can also give a default value and more
+                }
+            },
+            
+            // the part creating the HTML:
+            renderer : function(oRm, oControl) { // static function, so use the given "oControl" instance instead of "this" in the renderer function
+                oRm.write("<div"); 
+                oRm.writeControlData(oControl);  // writes the Control ID and enables event handling - important!
+                oRm.addStyle("width", oControl.getSize());  // write the Control property size; the Control has validated it to be a CSS size
+                oRm.addStyle("height", oControl.getSize());
+                oRm.writeStyles();
+                oRm.addClass("mySquare");        // add a CSS class for styles common to all control instances
+                oRm.writeClasses();              // this call writes the above class plus enables support for Square.addStyleClass(...)
+                oRm.write(">");
+                oRm.writeEscaped(oControl.getText()); // write another Control property, with XSS protection
+                oRm.write("</div>");
+            },
+            
+            // an event handler:
+            onclick : function(evt) {   // is called when the Control's area is clicked - no event registration required
+                alert("Control clicked! Text of the Control is:\n" + this.getText());
+            }
+        });
+        
+        
+        /*** DEFINE RE-USE COMPONENTS - NORMALLY DONE IN SEPARATE FILES ***/
+        
+        // define a new (simple) Controller type
+        sap.ui.controller("my.own.controller", {
+            
+            // implement an event handler in the Controller
+            doSomething: function() {
+                alert("Hello World!");
+            }
+        });
+        
+        
+        // define a new (simple) View type as an XmlView
+        // - using data binding for the Button text
+        // - binding a controller method to the Button's "press" event
+        // - also mixing in some plain HTML
+        // note: typically this would be a standalone file
+        var xml = '<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:my="my" xmlns="sap.ui.commons" '
+            + 'controllerName="my.own.controller" xmlns:html="http://www.w3.org/1999/xhtml">'
+            + '<Panel text="Hello World">'
+            + '<my:Square text="THIS IS A SQUARE!!!" size="200px"></my:Square>'
+            + '<my:Square text="{/textToDisplay}" size="150px"></my:Square>'
+            + '</Panel>'
+            + '</mvc:View>';
+        
+        
+        
+        /*** THIS IS THE "APPLICATION" CODE ***/
+        
+        // create some dummy JSON data
+        var data = {
+            textToDisplay: "Say Hello"
+        };
+        
+        // instantiate the View
+        var myView = sap.ui.xmlview({viewContent:xml});
+        
+        // create a Model and assign it to the View
+        var oModel = new sap.ui.model.json.JSONModel();
+        oModel.setData(data);
+        myView.setModel(oModel);
+        
+        // put the View onto the screen
+        myView.placeAt('content');
+        
+        
+    </script>
+    
+        <style>
+        /* PART 3: the style common to all control instances */
+        /* Could also be added inline to the control HTML, or separated out into a CSS file */
+        
+        .mySquare {                  /* style the CSS class that has been written by the renderer method */
+            display: inline-block;   /* enable squares to appear next to each other within one line */
+            border: 1px solid red;   /* add some border, so the square can actually be seen */
+            background-color: #ddd;
+            padding: 8px;
+            text-align: center;
+            -moz-box-sizing: border-box; /* consider padding+border part of the width/height */
+            box-sizing: border-box;
+        }
+    </style>
+    
+    </head>
+    <body class='sapUiBody'>
+        <div id='content'></div>
+    </body>
+</html>
